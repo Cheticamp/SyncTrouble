@@ -4,36 +4,28 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.ContentResolver;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Account account;
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
-        if (createSyncAccount() == null) {
+        account = createSyncAccount();
+        if (account == null) {
             Log.d(TAG, "<<<<Failed to create sync account.");
         } else {
-            Log.d(TAG, "<<<<Created sync account.");
-            addPeriodicSync();
+            Log.d(TAG, "<<<<Adding periodic sync");
+            ContentResolver.addPeriodicSync(account, AUTHORITY, Bundle.EMPTY,
+                    SYNC_SECONDS);
         }
     }
 
@@ -58,36 +50,10 @@ public class MainActivity extends AppCompatActivity {
             ContentResolver.setIsSyncable(newAccount, AUTHORITY, 1);
             ContentResolver.setSyncAutomatically(newAccount, AUTHORITY, true);
         } else {// else The account exists or some other error occurred.
-            newAccount = null;
             Log.d(TAG, "<<<<Could not add new account.");
+            newAccount = null;
         }
         return newAccount;
-    }
-
-    public void addPeriodicSync() {
-        Account account;
-
-        account = getSyncAccount();
-        if (account == null) {
-            Log.d(TAG, "<<<<Failed to identify account for periodic sync");
-            return;
-        }
-        // ...add back potentially with changed parameters
-        Log.d(TAG, "<<<<Adding periodic sync");
-        ContentResolver.addPeriodicSync(account, AUTHORITY, Bundle.EMPTY,
-                SYNC_SECONDS);
-    }
-
-    public Account getSyncAccount() {
-        AccountManager accountManager = AccountManager.get(this);
-        Account[] accounts;
-
-        try {
-            accounts = accountManager.getAccountsByType(ACCOUNT_TYPE);
-        } catch (SecurityException e) {
-            return null;
-        }
-        return (accounts.length > 0) ? accounts[0] : null;
     }
 
     private static final String TAG = "MainActivity";
