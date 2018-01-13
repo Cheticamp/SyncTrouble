@@ -20,4 +20,11 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <Button
+        android:id="@+id/doManualSync"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sync"
+        android:layout_gravity="center" />
+
 </android.support.design.widget.CoordinatorLayout>

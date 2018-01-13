@@ -25,7 +25,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     /**
      * Called by the framework to do remote synchronization of data.
      *
-     * @param account    Our default account
+     * @param account    Our default mAccount
      * @param syncBundle Bundle to pass additional information about the sync request.
      * @param authority  Our authority
      * @param provider   Points to the ContentProvider for this sync.

@@ -74,7 +74,7 @@ public class Authenticator extends AbstractAccountAuthenticator {
         throw new UnsupportedOperationException();
     }
 
-    // Checking features for the account is not supported
+    // Checking features for the mAccount is not supported
     @Override
     public Bundle hasFeatures(
             AccountAuthenticatorResponse r,

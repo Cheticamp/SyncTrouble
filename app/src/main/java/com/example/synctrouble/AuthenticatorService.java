@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
+// This is the minimal needed for the AuthenticatorService and is largely boiler plate.
 public class AuthenticatorService extends Service {
 
     // Instance field that stores the authenticator object
