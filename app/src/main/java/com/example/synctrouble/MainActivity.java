@@ -3,11 +3,12 @@ package com.example.synctrouble;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.ContentResolver;
+import android.content.SyncRequest;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 
 // See https://developer.android.com/training/id-auth/custom_auth.html
 
@@ -16,7 +17,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -30,7 +30,15 @@ public class MainActivity extends AppCompatActivity {
             // Add the periodic sync. If the periodic sync is already defined, this will change
             // the syncing period if it differs.
             Log.d(TAG, "<<<<Adding periodic sync");
-            ContentResolver.addPeriodicSync(mAccount, AUTHORITY, Bundle.EMPTY, SYNC_SECONDS);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                SyncRequest request = new SyncRequest.Builder()
+                    .syncPeriodic(SYNC_SECONDS, FLEX_TIME)
+                    .setSyncAdapter(mAccount, AUTHORITY)
+                    .setExtras(new Bundle()).build();
+                ContentResolver.requestSync(request);
+            } else {
+                ContentResolver.addPeriodicSync(mAccount, AUTHORITY, Bundle.EMPTY, SYNC_SECONDS);
+            }
 //            findViewById(R.id.doManualSync).setOnClickListener(new View.OnClickListener() {
 //                @Override
 //                public void onClick(View view) {
@@ -83,5 +91,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String ACCOUNT_TYPE = "com.example.synctrouble";
     private static final String ACCOUNT_NAME = "Default Account";
     public static final String AUTHORITY = "com.example.synctrouble";
-    public static int SYNC_SECONDS = 15;
+    public static int SYNC_SECONDS = 60;
+    public static int FLEX_TIME = 10;
 }
